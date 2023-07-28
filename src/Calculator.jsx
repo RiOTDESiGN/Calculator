@@ -11,7 +11,9 @@ const Calculator = ({ themeClass }) => {
     } else if (button === 'DEL') {
       setDisplayValue(displayValue.slice(0, -1));
     } else {
-      setDisplayValue(displayValue + button);
+      if (displayValue.replace(/,/g, '').length < 11) {
+        setDisplayValue(displayValue + button);
+      }
     }
   };
 
@@ -23,7 +25,12 @@ const Calculator = ({ themeClass }) => {
     try {
       const result = eval(displayValue);
       const roundedResult = roundToThreeDecimals(result);
-      setDisplayValue(roundedResult.toLocaleString());
+
+      if (roundedResult.toString().replace(/,/g, '').length > 11) {
+        setDisplayValue('Error: Limit Exceeded');
+      } else {
+        setDisplayValue(roundedResult.toString());
+      }
     } catch (error) {
       setDisplayValue('Error');
     }
@@ -36,7 +43,7 @@ const Calculator = ({ themeClass }) => {
   return (
     <div className={`calculator ${themeClass}`}>
       <div className="display">
-        {displayValue}
+        {displayValue}<div className="space"></div>
       </div>
       <div className="buttons">
         <button onClick={() => handleClick('7')}>7</button>
